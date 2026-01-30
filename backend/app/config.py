@@ -38,11 +38,11 @@ class Settings(BaseSettings):
     chunk_duration_ms: int = 2000  # process every N ms of audio
     min_audio_length_s: float = 0.5  # skip chunks shorter than this
 
-    # CORS
     cors_origins: list[str] = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://*.onrender.com",  # Allow all Render subdomains
+        "https://*.onrender.com",
+        "https://*.vercel.app", # Allow Vercel deployments
     ]
 
 
