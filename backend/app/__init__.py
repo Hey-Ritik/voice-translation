@@ -1,0 +1,1 @@
+"""Voice translation backend application."""
