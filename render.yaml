@@ -3,6 +3,7 @@ services:
   - type: web
     name: voice-translation-backend
     runtime: python
+    plan: free # Explicitly strictly use free tier
     repo: https://github.com/Hey-Ritik/voice-translation  # Updated per user metadata, adjust if needed during manual setup
     rootDir: backend
     buildCommand: "./build.sh"
