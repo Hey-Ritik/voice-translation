@@ -31,7 +31,7 @@ export const Footer = () => {
   return (
     <footer style={styles.footer}>
       <div style={styles.container}>
-        <span>Built in collaboration between <strong>Broadrange AI</strong> and <strong>RV University</strong></span>
+        <span>Built in collaboration between <strong>Broadrange.AI</strong> and <strong>RV University, Bangalore</strong></span>
       </div>
     </footer>
   );
