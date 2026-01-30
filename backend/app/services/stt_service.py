@@ -81,12 +81,8 @@ class STTService:
                 task="transcribe",
                 beam_size=1,
                 best_of=1,
-                vad_filter=True,
-                vad_parameters=dict(
-                    min_silence_duration_ms=300,
-                    speech_pad_ms=100,
-                    threshold=0.5,
-                ),
+                vad_filter=False,
+                # vad_parameters=dict(min_silence_duration_ms=300, speech_pad_ms=100, threshold=0.5),
                 condition_on_previous_text=False,
             )
             detected_lang = info.language
