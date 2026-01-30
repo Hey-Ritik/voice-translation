@@ -33,6 +33,6 @@ export const Footer = () => {
       <div style={styles.container}>
         <span>Built in collaboration between <strong>Broadrange.AI</strong> and <strong>RV University, Bangalore</strong></span>
       </div>
-    </footer>
+    </footer >
   );
 };
