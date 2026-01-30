@@ -150,3 +150,51 @@ voice-translation/
 ## License
 
 Use and modify as needed for your project.
+## 🛠️ Local Development
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- Git
+
+### 1. Backend Setup
+```bash
+cd backend
+python -m venv .venv
+# On Windows:
+.venv\Scripts\activate
+# On macOS/Linux:
+# source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+# If on Windows/No-GPU, install CPU torch separately if needed:
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# Run Server
+uvicorn app.main:app --reload
+```
+Server runs at `http://localhost:8000`. API Docs at `http://localhost:8000/docs`.
+
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+App runs at `http://localhost:5173`.
+
+## 🚀 Deployment (Render)
+
+This project is configured for [Render](https://render.com).
+
+1. **New Web Service**: Connect your repo.
+2. **Build Command**: `./backend/build.sh` (installs CPU-optimized Torch).
+3. **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
+4. **Environment Variables**:
+   - `PYTHON_VERSION`: `3.10.12`
+   - `WHISPER_MODEL_SIZE`: `tiny` (Recommended for free tier)
+   - `TRANSLATION_ENGINE`: `nllb`
+
+> **Note**: The first deployment might take a few minutes to build the dependencies.
+Use and modify as needed for your project.

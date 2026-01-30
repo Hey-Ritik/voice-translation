@@ -1,0 +1,21 @@
+services:
+  # Backend: Python FastAPI
+  - type: web
+    name: voice-translation-backend
+    runtime: python
+    repo: https://github.com/Hey-Ritik/voice-translation  # Updated per user metadata, adjust if needed during manual setup
+    rootDir: backend
+    buildCommand: "./build.sh"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: PORT
+        value: 8000 
+      - key: WHISPER_MODEL_SIZE
+        value: tiny  # Default to tiny for free tier
+      - key: WHISPER_DEVICE
+        value: cpu
+      - key: TRANSLATION_ENGINE
+        value: nllb # or openai
+```
