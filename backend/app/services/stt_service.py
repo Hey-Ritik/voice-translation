@@ -32,24 +32,10 @@ class STTService:
     def _load_model(self) -> None:
         if self._model is not None:
             return
-        try:
-            from faster_whisper import WhisperModel
+        
+        from app.services.model_loader import ModelLoader
+        self._model = ModelLoader.get_instance().whisper_model
 
-            self._model = WhisperModel(
-                self._settings.whisper_model_size,
-                device=self._settings.whisper_device,
-                compute_type=self._settings.whisper_compute_type,
-                download_root=None,
-                local_files_only=False,
-            )
-            logger.info(
-                "Loaded Whisper model %s on %s",
-                self._settings.whisper_model_size,
-                self._settings.whisper_device,
-            )
-        except Exception as e:
-            logger.exception("Failed to load Whisper model: %s", e)
-            raise
 
     def transcribe(
         self,

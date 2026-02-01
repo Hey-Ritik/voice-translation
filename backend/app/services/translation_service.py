@@ -26,20 +26,10 @@ class TranslationService:
     def _load_nllb(self) -> None:
         if self._model is not None and self._tokenizer is not None:
             return
-        try:
-            import torch
-            from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+        
+        from app.services.model_loader import ModelLoader
+        self._model, self._tokenizer, self._device = ModelLoader.get_instance().nllb_components
 
-            self._device = 0 if torch.cuda.is_available() else -1
-            model_name = self._settings.nllb_model
-            self._tokenizer = AutoTokenizer.from_pretrained(model_name)
-            self._model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-            if self._device >= 0:
-                self._model = self._model.to(self._device)
-            logger.info("Loaded NLLB translation model (model + tokenizer)")
-        except Exception as e:
-            logger.exception("Failed to load NLLB: %s", e)
-            raise
 
     def translate_nllb(self, text: str, source_lang: str, target_lang: str) -> str:
         """Translate using NLLB-200 (model + tokenizer, dynamic language pair)."""

@@ -9,7 +9,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.services.language_codes import TARGET_LANGUAGES
-from app.websocket.audio_handler import process_audio_chunk
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,7 +19,12 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup/shutdown: optional preload of models can go here."""
+    """Startup/shutdown: preload models."""
+    from app.services.model_loader import ModelLoader
+    try:
+        ModelLoader.get_instance().start_loading()
+    except Exception as e:
+        logger.error(f"Error triggering background model loading: {e}")
     yield
     # Shutdown cleanup if needed
 
@@ -65,42 +69,7 @@ async def languages():
 
 @app.websocket("/ws/audio")
 async def websocket_audio(websocket: WebSocket):
-    """Real-time audio: client sends JSON { audio (base64), target_lang, sample_rate? }."""
+    """Real-time audio: delegate to handler."""
     await websocket.accept()
-    target_lang = "en"
-    sample_rate = settings.sample_rate
-    try:
-        await websocket.send_json({
-            "type": "ready",
-            "message": "Send audio chunks as JSON: { \"audio\": \"<base64>\", \"target_lang\": \"hi\" }",
-        })
-        while True:
-            try:
-                data = await websocket.receive_json()
-            except Exception as e:
-                await websocket.send_json({"type": "error", "error": str(e)})
-                continue
-
-            target_lang = data.get("target_lang") or target_lang
-            sample_rate = data.get("sample_rate") or sample_rate
-            audio_b64 = data.get("audio")
-            if not audio_b64:
-                await websocket.send_json({"type": "error", "error": "Missing 'audio' field"})
-                continue
-
-            result = await process_audio_chunk(audio_b64, target_lang, sample_rate)
-            result["type"] = "caption"
-            await websocket.send_json(result)
-    except WebSocketDisconnect:
-        logger.info("WebSocket client disconnected")
-    except Exception as e:
-        logger.exception("WebSocket error: %s", e)
-        try:
-            await websocket.send_json({"type": "error", "error": str(e)})
-        except Exception:
-            pass
-    finally:
-        try:
-            await websocket.close()
-        except Exception:
-            pass
+    from app.websocket.audio_handler import handle_audio_websocket
+    await handle_audio_websocket(websocket)

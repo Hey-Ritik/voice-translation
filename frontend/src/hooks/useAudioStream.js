@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 
 const SAMPLE_RATE = 16000;
-const CHUNK_MS = 2000;
+const CHUNK_MS = 250;
 const CHUNK_SAMPLES = (SAMPLE_RATE * CHUNK_MS) / 1000;
 
 /**
@@ -89,12 +89,12 @@ export function useAudioStream({ onChunk, onError }) {
       try {
         sourceRef.current.disconnect();
         processorRef.current.disconnect();
-      } catch (_) {}
+      } catch (_) { }
       processorRef.current = null;
       sourceRef.current = null;
     }
     if (contextRef.current) {
-      contextRef.current.close().catch(() => {});
+      contextRef.current.close().catch(() => { });
       contextRef.current = null;
     }
     bufferRef.current = [];
